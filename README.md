@@ -35,15 +35,15 @@ git clone https://github.com/girishmallya123/Movie-Theatre-Seating.git
 
 2) Enter the project directory, 
 ```bash
-	cd Movie-Theatre-Seating/
+cd Movie-Theatre-Seating/
 ```
 3) To run unit tests, run the following command,
 ```bash
-	python3.9 -m unittest discover tests
+python3.9 -m unittest discover tests
 ```
 4) To run the program, 
 ```bash
-	python3.9 main.py input_file.txt output_file.txt
+python3.9 main.py input_file.txt output_file.txt
 ```
 
 ***Sample Input file***

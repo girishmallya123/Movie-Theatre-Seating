@@ -41,3 +41,12 @@ class TestArgumentParse(unittest.TestCase):
                       main.parse_command_line_args, args)
 
 
+    '''
+        Test for invalid input file
+    '''
+    def test_invalid_number_of_args_2(self):
+        args = ["main.py", "non-existent-file.txt", "output_file.txt"] 
+        self.assertRaises(FileNotFoundError,
+                      main.parse_command_line_args, args)
+
+

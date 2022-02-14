@@ -14,6 +14,10 @@ class Theater():
         return ((x>=0 and x< self.num_rows) and (y>=0 and y< self.num_cols))
 
     def calculate_free_seats(self, r_no, c_no, seats):
+
+        if seats > self.availability[r_no]:
+            return 0
+
         free_seats = 0 
         if c_no == 0:
             free_seats = 3
@@ -31,10 +35,11 @@ class Theater():
     def update_theater_layout(self, row_n, col_n, n_seats):
         for i in range(col_n, col_n + n_seats):
             self.theater_layout[row_n][i] = True
+        self.availability[row_n] -= n_seats
 
     def convert_to_seat_nums(self, row_num, col_num, num_seats):
         row_identifier = chr(ord('A') + row_num)
-        seats = [ "{}{}".format(row_identifier,str(i)) for i in range(col_num, col_num+num_seats)]
+        seats = ["{}{}".format(row_identifier,str(i)) for i in range(col_num, col_num+num_seats)]
         return ",".join(seats)
 
     def check_row_spacing(self, row_num, col_num, num_seats):
@@ -46,17 +51,21 @@ class Theater():
         return True
 
     def print_theater_layout(self):
-        print(self.theater_layout)
+        for i in self.theater_layout:
+            print(i)
 
     def allocate_seats(self, num_seats):
         logger.info("theater.allocate_seats: attempting to allocate {} seats".format(num_seats))
         num_seats = int(num_seats)
-        row_num = self.num_rows // 2
+        if self.num_rows == 1:
+            row_num = 0
+        else:
+            row_num = (self.num_rows // 2) -1
         col_num = 0 
         row_flip_flag = 1
         counter = 1
 
-        while row_num > 0 and row_num < self.num_rows:
+        while row_num >= 0 and row_num<self.num_rows:
             free_seats = self.calculate_free_seats(row_num, col_num, num_seats)
             if free_seats == 6:
                 row_spacing = self.check_row_spacing(row_num, col_num, num_seats)
@@ -71,4 +80,6 @@ class Theater():
                 row_num = row_num + (row_flip_flag*counter)
                 counter += 1
                 row_flip_flag*=-1
+
+        return ""
 

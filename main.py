@@ -24,6 +24,10 @@ def parse_command_line_args(args):
 
     return input_file, output_file
 
+'''
+    This function converts the allocations into the desired output format
+    to be written in the file.
+'''
 def store_allocations(op_file_contents, customer, allocations):
     if customer in op_file_contents:
         new_allocation = op_file_contents[customer]+ "," + allocations
@@ -33,6 +37,10 @@ def store_allocations(op_file_contents, customer, allocations):
 
     return op_file_contents
 
+'''
+    This function writes to the output file passed in the command line
+    argument.
+'''
 def write_to_file(op_file_contents, output_file):
     with open(output_file, 'w') as f: 
         for key, value in op_file_contents.items(): 
@@ -49,16 +57,25 @@ def book_seats(input_file, output_file):
         attr = line.split(' ')
         if not len(attr) == 2:
             raise InvalidInputFileException
+
         num_seats = int(attr[1])
         customer = attr[0]
 
         while num_seats > 20:
             allocations = theater.allocate_seats(20)
+            if not allocations:
+                logger.info("customer {} could not be allocated because of unavailable spaces".format(customer))
+                break
             num_seats -= 20
             logger.info("customer {} has been allocated {}".format(customer, allocations))
             output_file_contents = store_allocations(output_file_contents, customer, allocations)
         
         allocations = theater.allocate_seats(num_seats)
+
+        if not allocations:
+            logger.info("customer {} could not be allocated because of unavailable spaces".format(customer))
+            continue
+
         output_file_contents = store_allocations(output_file_contents, customer, allocations)
         logger.info("customer {} has been allocated {}".format(customer, allocations))
 

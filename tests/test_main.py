@@ -1,7 +1,7 @@
 import unittest
 import main 
 import os
-from exceptions import InvalidCommandLineExecution
+from exceptions import InvalidCommandLineExecution, InvalidInputFileException
 
 class TestArgumentParse(unittest.TestCase):
 
@@ -11,8 +11,11 @@ class TestArgumentParse(unittest.TestCase):
             open(filename, 'w').close()
 
     def tearDown(self):
-        filename = 'input_file.txt'
-        os.remove(filename)
+        filenames = ['input_file.txt', "input_file2.txt", "output_file.txt"]
+        
+        for f in filenames: 
+            if os.path.exists(f):
+                os.remove(f)
 
     '''
         Test for valid parameters. (n=3)
@@ -50,3 +53,27 @@ class TestArgumentParse(unittest.TestCase):
                       main.parse_command_line_args, args)
 
 
+    '''
+        Test for invalid input file_contents
+    '''
+    def test_invalid_file_contents(self):
+        args = ["main.py", "input_file2.txt", "output_file.txt"]
+        f = open(args[1], "w")
+        f.write("abc")
+        f.close()
+
+        self.assertRaises(InvalidInputFileException,
+                      main.book_seats, args[1], args[2])
+
+    '''
+        Test for valid file_contents and valid output file generation
+    '''
+    def test_valid_contents(self):
+        args = ["main.py", "input_file2.txt", "output_file.txt"]
+        
+        f = open(args[1], "w")
+        f.write("R001 3")
+        f.close()
+        
+        main.book_seats(args[1], args[2])
+        self.assertTrue(os.path.isfile(args[2])) 
